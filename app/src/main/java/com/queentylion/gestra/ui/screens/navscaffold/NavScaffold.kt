@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -42,7 +43,8 @@ import com.queentylion.gestra.ui.screens.home.Home
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavScaffold(
-    navViewModel: NavScaffoldViewModel = viewModel()
+    navViewModel: NavScaffoldViewModel = viewModel(),
+    mainNavController: NavController
 ) {
     val navController = rememberNavController()
     val navUiState = navViewModel.uiState.collectAsState()

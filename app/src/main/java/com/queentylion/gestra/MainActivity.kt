@@ -5,6 +5,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -30,13 +32,16 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.queentylion.gestra.ui.composables.BottomNavigationBar
 import com.queentylion.gestra.ui.composables.Screen
+import com.queentylion.gestra.ui.screens.main.Main
 import com.queentylion.gestra.ui.screens.navscaffold.NavScaffold
 import com.queentylion.gestra.ui.screens.translate.Translate
 import com.queentylion.gestra.ui.theme.AppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
+
         setContent {
             AppTheme {
                 // A surface container using the 'background' color from the theme
@@ -44,8 +49,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-//                    NavScaffold()
-                    Translate()
+                    Main()
                 }
             }
         }

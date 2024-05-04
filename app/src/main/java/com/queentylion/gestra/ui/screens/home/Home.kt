@@ -22,6 +22,7 @@ import com.queentylion.gestra.R
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.queentylion.gestra.ui.composables.FullPanel
 import com.queentylion.gestra.ui.composables.SmallPanel
 

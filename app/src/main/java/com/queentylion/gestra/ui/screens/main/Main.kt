@@ -1,0 +1,88 @@
+package com.queentylion.gestra.ui.screens.main
+
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.queentylion.gestra.ui.screens.navscaffold.NavScaffold
+import com.queentylion.gestra.ui.screens.translate.Translate
+
+object Routes {
+    const val NavScaffold = "nav_scaffold"
+    const val Translate = "translate"
+}
+
+@Composable
+fun Main() {
+    val navController = rememberNavController()
+    // TODO: Set the nav controller correctly
+
+    // Define the navigation graph using NavHost
+    NavHost(
+        navController = navController,
+        startDestination = Routes.NavScaffold, // Define the starting destination
+        modifier = Modifier.fillMaxSize() // Fill the available space
+    ) {
+        // Define the NavScaffold composable destination
+        composable(
+            Routes.NavScaffold,
+            enterTransition = {
+                when (initialState.destination.route) {
+                    Routes.Translate ->
+                        slideIntoContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Down,
+                            animationSpec = tween(300)
+                        )
+
+                    else -> null
+                }
+            },
+            exitTransition = {
+                when (targetState.destination.route) {
+                    Routes.Translate ->
+                        slideOutOfContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Up,
+                            animationSpec = tween(300)
+                        )
+
+                    else -> null
+                }
+            },
+        ) {
+            NavScaffold(mainNavController = navController)
+        }
+
+        // Define the Translate composable destination
+        composable(
+            Routes.Translate,
+            enterTransition = {
+                when (initialState.destination.route) {
+                    Routes.NavScaffold ->
+                        slideIntoContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Up,
+                            animationSpec = tween(300)
+                        )
+
+                    else -> null
+                }
+            },
+            exitTransition = {
+                when (targetState.destination.route) {
+                    Routes.NavScaffold ->
+                        slideOutOfContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Down,
+                            animationSpec = tween(300)
+                        )
+
+                    else -> null
+                }
+            },
+        ) {
+            Translate()
+        }
+    }
+}
