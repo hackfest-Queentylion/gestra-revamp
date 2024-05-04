@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.Surface
+import androidx.compose.material3.Surface
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,10 +32,14 @@ sealed class Screen(val route: String, @DrawableRes val icon: Int, val label: St
 }
 
 @Composable
-fun BottomNavigationBar(navController: NavController) {
+fun BottomNavigationBar(
+    navController: NavController,
+    onNavButtonPressed: (String) -> Unit
+) {
     Surface(
-        elevation = 10.dp,
-        modifier = Modifier.fillMaxWidth()
+        shadowElevation = 10.dp,
+        modifier = Modifier.fillMaxWidth(),
+
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
@@ -72,6 +76,7 @@ fun BottomNavigationBar(navController: NavController) {
                             launchSingleTop = true
                             restoreState = true
                         }
+                        onNavButtonPressed(item.label)
                     }
                 ) {
                     Icon(
