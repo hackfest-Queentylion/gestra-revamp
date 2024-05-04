@@ -1,18 +1,16 @@
 package com.queentylion.gestra.ui.screens.translate
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -22,18 +20,16 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.queentylion.gestra.Greeting
 import com.queentylion.gestra.ui.composables.BottomControls
 import com.queentylion.gestra.ui.composables.ResultBox
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Glove(
+fun Translate(
 
 ) {
     Scaffold(
@@ -52,7 +48,7 @@ fun Glove(
                         )
                     },
                     navigationIcon = {
-                        IconButton(onClick = { /* do something */ }) {
+                        IconButton(onClick = { /* TODO: Navigation icon */ }) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = "Go back to home page"
@@ -80,6 +76,13 @@ fun Glove(
             ResultBox(
                 modifier = Modifier
                     .weight(1f)
+            )
+            Divider(
+                thickness = (0.5).dp,
+                modifier = Modifier
+                    .offset(y = (-32).dp)
+                    .padding(vertical = 25.dp, horizontal = 40.dp)
+                    .background(MaterialTheme.colorScheme.outline.copy(0.5f))
             )
             BottomControls()
         }

@@ -31,7 +31,7 @@ import androidx.navigation.compose.rememberNavController
 import com.queentylion.gestra.ui.composables.BottomNavigationBar
 import com.queentylion.gestra.ui.composables.Screen
 import com.queentylion.gestra.ui.screens.navscaffold.NavScaffold
-import com.queentylion.gestra.ui.screens.translate.Glove
+import com.queentylion.gestra.ui.screens.translate.Translate
 import com.queentylion.gestra.ui.theme.AppTheme
 
 class MainActivity : ComponentActivity() {
@@ -45,7 +45,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
 //                    NavScaffold()
-                    Glove()
+                    Translate()
                 }
             }
         }
