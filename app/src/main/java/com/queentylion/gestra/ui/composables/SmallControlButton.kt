@@ -32,7 +32,7 @@ fun SmallControlButton(
             .clickable {
                 onButtonClick()
             }
-            .background(MaterialTheme.colorScheme.secondaryContainer.copy(0.65f))
+            .background(MaterialTheme.colorScheme.inversePrimary.copy(0.65f))
     ) {
         Icon(
             imageVector = ImageVector.vectorResource(icon),

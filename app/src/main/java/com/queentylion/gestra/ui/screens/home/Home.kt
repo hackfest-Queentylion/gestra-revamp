@@ -1,6 +1,7 @@
 package com.queentylion.gestra.ui.screens.home
 
 import android.provider.Settings.Panel
+import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,41 +26,54 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.queentylion.gestra.ui.composables.FullPanel
 import com.queentylion.gestra.ui.composables.SmallPanel
+import com.queentylion.gestra.ui.screens.main.Routes
 
 data class PanelData(
     val text: String,
     val backgroundColor: Color,
     val reversed: Boolean,
-    @DrawableRes val imgResource: Int
+    @DrawableRes val imgResource: Int,
+    val listener: () -> Unit
 )
 
 @Composable
-fun Home() {
+fun Home(
+    mainNavController: NavController
+) {
     val panelItems = listOf(
         PanelData(
             "Voice Wizard",
             MaterialTheme.colorScheme.secondary,
             true,
             R.drawable.img_smallpanel_mic_background
-        ),
+        ) {
+            Log.d("SmallPanelListener", "Voice Wizard is clicked")
+            mainNavController.navigate(Routes.Translate)
+        },
         PanelData(
             "Magic Gloves",
             MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.9f),
             true,
             R.drawable.img_smallpanel_magic_background
-        ),
+        ) {
+            mainNavController.navigate(Routes.Translate)
+        },
         PanelData(
             "Sign Mastery",
             MaterialTheme.colorScheme.inversePrimary,
             false,
             R.drawable.img_smallpanel_gradhat_background
-        ),
+        ) {
+            mainNavController.navigate(Routes.Translate)
+        },
         PanelData(
             "Quick Notes",
             Color(0xFFFBBC12),
             false,
             R.drawable.img_smallpanel_write_background
-        ),
+        ) {
+            mainNavController.navigate(Routes.Translate)
+        },
     )
 
     Column(

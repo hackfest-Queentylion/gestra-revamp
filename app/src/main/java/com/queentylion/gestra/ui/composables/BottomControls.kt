@@ -1,5 +1,9 @@
 package com.queentylion.gestra.ui.composables
 
+import android.content.Intent
+import android.os.Bundle
+import android.speech.RecognitionListener
+import android.speech.RecognizerIntent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -11,26 +15,63 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.queentylion.gestra.R
+import java.util.Locale
 
 @Composable
-fun BottomControls() {
-    var activeButtonIndex by remember { mutableStateOf(1) }
+fun BottomControls(
+    activeButtonIndex: Int,
+    onRadioClicked: (Int) -> Unit
+) {
+
+    val recognitionListener = object: RecognitionListener {
+        override fun onReadyForSpeech(params: Bundle?) {
+            TODO("Not yet implemented")
+        }
+
+        override fun onBeginningOfSpeech() {
+            TODO("Not yet implemented")
+        }
+
+        override fun onRmsChanged(rmsdB: Float) {
+            TODO("Not yet implemented")
+        }
+
+        override fun onBufferReceived(buffer: ByteArray?) {
+            TODO("Not yet implemented")
+        }
+
+        override fun onEndOfSpeech() {
+            TODO("Not yet implemented")
+        }
+
+        override fun onError(error: Int) {
+            TODO("Not yet implemented")
+        }
+
+        override fun onResults(results: Bundle?) {
+            TODO("Not yet implemented")
+        }
+
+        override fun onPartialResults(partialResults: Bundle?) {
+            TODO("Not yet implemented")
+        }
+
+        override fun onEvent(eventType: Int, params: Bundle?) {
+            TODO("Not yet implemented")
+        }
+
+    }
 
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -45,7 +86,7 @@ fun BottomControls() {
             ControlButton(
                 icon = R.drawable.ic_textinput,
                 onButtonClick = {
-                    activeButtonIndex = 0
+                    onRadioClicked(0)
                 },
                 contentTitle = "Text",
                 contentDescription = "Go to favorites page",
@@ -54,7 +95,7 @@ fun BottomControls() {
             ControlButton(
                 icon = R.drawable.ic_gesture_control,
                 onButtonClick = {
-                    activeButtonIndex = 1
+                    onRadioClicked(1)
                 },
                 contentTitle = "Gesture",
                 contentDescription = "Go to favorites page",
@@ -63,7 +104,7 @@ fun BottomControls() {
             ControlButton(
                 icon = R.drawable.ic_microphone,
                 onButtonClick = {
-                    activeButtonIndex = 2
+                    onRadioClicked(2)
                 },
                 contentTitle = "Voice",
                 contentDescription = "Go to favorites page",
@@ -79,7 +120,7 @@ fun BottomControls() {
         ) {
             SmallControlButton(
                 icon = R.drawable.ic_favorite,
-                onButtonClick = { /*TODO*/ },
+                onButtonClick = { /* TODO */ },
                 contentDescription = "Go to favorites page"
             )
             Box(
@@ -89,13 +130,19 @@ fun BottomControls() {
                 Box(
                     modifier = Modifier
                         .clip(CircleShape)
-                        .clickable {
+                        .clickable(enabled = activeButtonIndex != 0) {
                             /*TODO*/
                         }
-                        .background(MaterialTheme.colorScheme.onPrimaryContainer)
+                        .background(
+                            if (activeButtonIndex != 0) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onPrimaryContainer.copy(
+                                0.3f
+                            )
+                        )
                 ) {
                     Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_gesture_action),
+                        imageVector = if (activeButtonIndex == 2) ImageVector.vectorResource(R.drawable.ic_microphone) else ImageVector.vectorResource(
+                            R.drawable.ic_gesture_action
+                        ),
                         contentDescription = "Start action",
                         tint = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier

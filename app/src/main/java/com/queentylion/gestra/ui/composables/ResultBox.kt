@@ -44,7 +44,7 @@ fun ResultBox(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(start = 25.dp, end = 25.dp, top = 20.dp, bottom = 48.dp)
+            .padding(start = 25.dp, end = 25.dp, bottom = 48.dp)
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,

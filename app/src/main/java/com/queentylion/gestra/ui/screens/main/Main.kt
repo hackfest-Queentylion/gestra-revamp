@@ -19,15 +19,14 @@ object Routes {
 @Composable
 fun Main() {
     val navController = rememberNavController()
-    // TODO: Set the nav controller correctly
 
-    // Define the navigation graph using NavHost
+
     NavHost(
         navController = navController,
-        startDestination = Routes.NavScaffold, // Define the starting destination
-        modifier = Modifier.fillMaxSize() // Fill the available space
+        startDestination = Routes.NavScaffold,
+        modifier = Modifier.fillMaxSize()
     ) {
-        // Define the NavScaffold composable destination
+
         composable(
             Routes.NavScaffold,
             enterTransition = {
@@ -56,7 +55,6 @@ fun Main() {
             NavScaffold(mainNavController = navController)
         }
 
-        // Define the Translate composable destination
         composable(
             Routes.Translate,
             enterTransition = {
@@ -82,7 +80,7 @@ fun Main() {
                 }
             },
         ) {
-            Translate()
+            Translate(mainNavController = navController)
         }
     }
 }

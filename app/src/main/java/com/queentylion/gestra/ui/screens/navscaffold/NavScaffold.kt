@@ -125,7 +125,7 @@ fun NavScaffold(
                     }
                 },
             ) {
-                Home()
+                Home(mainNavController = mainNavController)
 //                Greeting(name = "This is home")
             }
             composable(

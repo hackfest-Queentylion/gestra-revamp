@@ -51,7 +51,7 @@ fun ControlButton(
         shape = RoundedCornerShape(13.dp),
         border = BorderStroke(if (isActive) 0.dp else (0.7).dp, MaterialTheme.colorScheme.outline.copy(0.5f)),
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (isActive) MaterialTheme.colorScheme.secondaryContainer.copy(0.65f) else Color.Transparent
+            containerColor = if (isActive) MaterialTheme.colorScheme.inversePrimary.copy(0.65f) else Color.Transparent
         ),
         modifier = Modifier.size(95.dp),
         contentPadding = PaddingValues(0.dp)

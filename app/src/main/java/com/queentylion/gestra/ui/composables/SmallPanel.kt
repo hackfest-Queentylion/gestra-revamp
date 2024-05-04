@@ -44,7 +44,7 @@ import com.queentylion.gestra.ui.screens.home.PanelData
 
 @Composable
 fun SmallPanel(
-    data: PanelData
+    data: PanelData,
 ) {
     val backgroundPainter: Painter = painterResource(id = data.imgResource)
 
@@ -74,7 +74,7 @@ fun SmallPanel(
                 modifier = Modifier.fillMaxWidth()
             )
             IconButton(
-                onClick = { /*TODO*/ },
+                onClick = { data.listener() },
                 colors = IconButtonDefaults.iconButtonColors(
                     containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
                     contentColor = MaterialTheme.colorScheme.primaryContainer
