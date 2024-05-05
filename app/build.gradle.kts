@@ -49,9 +49,9 @@ android {
     }
 }
 
-repositories {
-    mavenCentral()
-}
+//repositories {
+//    mavenCentral()
+//}
 
 dependencies {
 
