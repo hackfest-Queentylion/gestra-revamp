@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id ("dagger.hilt.android.plugin")
+    id ("kotlin-kapt")
 }
 
 android {
@@ -80,4 +82,18 @@ dependencies {
 
     // View model for compose
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+
+    // DI
+    implementation ("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation ("com.google.dagger:hilt-android:2.49")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    kapt("com.google.dagger:hilt-android-compiler:2.48")
+    kapt("androidx.hilt:hilt-compiler:1.2.0")
+
+    // TFLite
+    implementation("org.tensorflow:tensorflow-lite:2.5.0")
+    implementation("org.tensorflow:tensorflow-lite-select-tf-ops:2.5.0")
+    implementation("org.tensorflow:tensorflow-lite-support:0.1.0")
+    implementation("org.tensorflow:tensorflow-lite-metadata:0.1.0")
+    implementation("org.tensorflow:tensorflow-lite-gpu:2.3.0")
 }
