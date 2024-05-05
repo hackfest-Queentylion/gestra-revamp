@@ -1,12 +1,15 @@
 package com.queentylion.gestra.ui.composables
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -50,9 +53,12 @@ fun SmallPanel(
 
     Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(200.dp)
             .clip(RoundedCornerShape(25.dp))
+            .fillMaxWidth()
+            .clickable {
+                data.listener()
+            }
+            .aspectRatio(1f)
             .background(data.backgroundColor)
             .paint(painter = backgroundPainter, contentScale = ContentScale.Fit)
     ) {

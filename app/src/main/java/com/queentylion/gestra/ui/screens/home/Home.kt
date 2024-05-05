@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
@@ -81,13 +82,16 @@ fun Home(
             .padding(start = 16.dp, top = 20.dp, end = 16.dp)
             .fillMaxHeight()
     ) {
-        FullPanel()
-        Spacer(modifier = Modifier.size(16.dp))
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
+            item(span = {
+                GridItemSpan(maxLineSpan)
+            }) {
+                FullPanel()
+            }
             items(panelItems) { panelData ->
                 SmallPanel(data = panelData)
             }

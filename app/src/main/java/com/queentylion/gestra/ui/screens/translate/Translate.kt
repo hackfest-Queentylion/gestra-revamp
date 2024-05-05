@@ -99,7 +99,7 @@ fun Translate(
                 isWarning = false,
                 hasToggle = true,
                 isToggleChecked = isGeminiChecked,
-                onTogglePressed = { it ->
+                onTogglePressed = {
                     isGeminiChecked = it
                 },
                 text = "Empower interaction via Gemini",

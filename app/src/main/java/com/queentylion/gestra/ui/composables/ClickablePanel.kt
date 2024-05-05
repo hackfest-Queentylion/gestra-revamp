@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -43,23 +44,23 @@ fun ClickablePanel(
             MaterialTheme.colorScheme.outline.copy(0.5f)
         ),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color.Transparent,
+            containerColor = if (isWarning) MaterialTheme.colorScheme.error.copy(0.5f) else Color.Transparent,
             contentColor = Color.Black
         ),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 25.dp, end = 25.dp, top = 20.dp, bottom = 24.dp),
-        contentPadding = PaddingValues(vertical = 10.dp, horizontal = 15.dp)
+            .padding(start = 25.dp, end = 30.dp, top = 20.dp, bottom = 24.dp),
+        contentPadding = PaddingValues(vertical = 10.dp, horizontal = 20.dp)
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .background(if (isWarning) MaterialTheme.colorScheme.error.copy(0.5f) else Color.Transparent)
                 .fillMaxWidth()
         ) {
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.weight(1f).padding(end = 10.dp)
             ) {
                 Image(
                     painter = painterResource(id = imageRes),
@@ -67,7 +68,13 @@ fun ClickablePanel(
                     modifier = Modifier
                         .size(33.dp)
                 )
-                Text(text = text, modifier = Modifier.padding(start = 12.dp))
+                Text(
+                    text = text,
+                    modifier = Modifier.padding(start = 12.dp),
+                    color = if (isWarning) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onPrimaryContainer,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1
+                )
             }
             if (hasToggle) {
                 Switch(
