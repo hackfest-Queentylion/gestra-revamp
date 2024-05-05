@@ -73,8 +73,7 @@ class TFLiteGesturePredictorImpl(
 
             Delegate.NNAPI -> tfliteOption.addDelegate(NnApiDelegate())
         }
-        val modelPredict: String
-        modelPredict = if (currentModel == MODEL_INT8) {
+        val modelPredict: String = if (currentModel == MODEL_INT8) {
             "model_sibi.tflite"
         } else {
             "model_sibi.tflite"
@@ -92,7 +91,7 @@ class TFLiteGesturePredictorImpl(
     }
 
     override fun predict(gloveKeypoint: List<List<Int>>): String {
-        val inferenceTime = SystemClock.uptimeMillis()
+        val startTime = System.currentTimeMillis()
 
         // Flatten the glove keypoints and convert them to float
         val flatInputArray = gloveKeypoint.flatten().map { it.toFloat() }.toFloatArray()
@@ -121,6 +120,11 @@ class TFLiteGesturePredictorImpl(
 
         // Run inference
         interpreterPredict?.run(inputTensorBuffer.buffer, predictOutput.buffer)
+
+        val endTime = System.currentTimeMillis()
+        val inferenceTime = endTime - startTime
+
+        Log.d("TIME ML", inferenceTime.toString())
 
         // Return the predicted label
         return getOutputString(predictOutput)
