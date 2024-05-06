@@ -52,7 +52,6 @@ class SettingsViewModel @Inject constructor(
     @RequiresApi(Build.VERSION_CODES.S)
     fun requestBluetoothPermissionsAndEnable(
         activity: ComponentActivity,
-        onPermissionCallback: (Boolean) -> Unit
     ) {
         // Define the permissions you need
         val permissions = arrayOf(
@@ -74,7 +73,6 @@ class SettingsViewModel @Inject constructor(
                 REQUEST_BLUETOOTH_PERMISSION,
             )
             enableBluetooth(activity)
-            onPermissionCallback(allPermissionsGranted)
         } else {
             // If permissions are already granted, enable Bluetooth
             enableBluetooth(activity)

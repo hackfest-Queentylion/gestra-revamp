@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -22,8 +23,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.LifecycleOwner
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.queentylion.gestra.ui.composables.AnimatedGlove
 
+@OptIn(ExperimentalPermissionsApi::class)
 @SuppressLint("RestrictedApi")
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
@@ -32,27 +36,22 @@ fun Settings(
 ) {
 
     val context = LocalContext.current
-    val activity = LocalContext.current as? ComponentActivity
-    val lifecycleOwner = LocalLifecycleOwner.current
+    val requiredPermissions = listOf(
+        android.Manifest.permission.BLUETOOTH_SCAN,
+        android.Manifest.permission.BLUETOOTH_CONNECT,
+        android.Manifest.permission.ACCESS_FINE_LOCATION
+    )
+    val permissionsState = rememberMultiplePermissionsState(requiredPermissions)
 
-    DisposableEffect(lifecycleOwner) {
-        viewModel.initializeBluetooth(context)
-        viewModel.requestBluetoothPermissionsAndEnable(activity!!) { permissionGranted ->
-            if (permissionsGranted) {
-                viewModel.initializeGloveConnection()
-            } else {
-                // Handle permissions not granted
-            }
-        }
+    viewModel.initializeBluetooth(context)
 
-        onDispose {
-
+    LaunchedEffect(permissionsState.allPermissionsGranted) {
+        if (permissionsState.allPermissionsGranted) {
+            viewModel.initializeGloveConnection()
+        } else {
+            permissionsState.launchMultiplePermissionRequest()
         }
     }
-    
-    viewModel.initializeBluetooth(context)
-    viewModel.requestBluetoothPermissionsAndEnable(activity!!)
-    viewModel.initializeGloveConnection()
 
     Column(
         verticalArrangement = Arrangement.Center,
