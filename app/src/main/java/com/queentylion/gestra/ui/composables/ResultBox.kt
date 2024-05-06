@@ -4,7 +4,9 @@ import android.os.Build.VERSION_CODES.Q
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -18,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,7 +43,13 @@ import com.queentylion.gestra.R
 
 
 @Composable
-fun ResultBox(modifier: Modifier = Modifier) {
+fun ResultBox(
+    modifier: Modifier = Modifier,
+    resultText: String = "Start sign language",
+    textColor: Color = Color(0xFFD3D3D3),
+    onSpeakerClick: () -> Unit,
+    test: String
+) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -48,6 +57,7 @@ fun ResultBox(modifier: Modifier = Modifier) {
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
@@ -58,22 +68,42 @@ fun ResultBox(modifier: Modifier = Modifier) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_speaker),
-                    contentDescription = "Placeholder icon",
-                    tint = MaterialTheme.colorScheme.outline.copy(0.9f),
-                    modifier = Modifier.padding(end = 15.dp)
-                )
-                Icon(
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_star),
-                    tint = MaterialTheme.colorScheme.outline.copy(0.9f),
-                    contentDescription = "Placeholder icon"
-                )
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(5.dp))
+                        .clickable {
+                            onSpeakerClick()
+                        }
+                ) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_speaker),
+                        contentDescription = "Placeholder icon",
+                        tint = MaterialTheme.colorScheme.outline.copy(0.9f),
+                        modifier = Modifier
+                            .padding(7.dp)
+                            .size(25.dp)
+                    )
+                }
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(5.dp))
+                        .clickable { }
+                ) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_star),
+                        tint = MaterialTheme.colorScheme.outline.copy(0.9f),
+                        contentDescription = "Placeholder icon",
+                        modifier = Modifier
+                            .padding(7.dp)
+                            .size(25.dp)
+                    )
+                }
             }
         }
         Column(
             modifier = Modifier
-//                .background(Color.LightGray)
                 .weight(1f)
                 .fillMaxWidth()
                 .size(100.dp)
@@ -82,11 +112,12 @@ fun ResultBox(modifier: Modifier = Modifier) {
         ) {
             Text(
 //                text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-                text = "Start sign language",
+                text = resultText,
                 fontSize = 25.sp,
                 lineHeight = 30.sp,
-                color = MaterialTheme.colorScheme.outline
+                color = textColor
             )
+            Text(text = test )
         }
     }
 }

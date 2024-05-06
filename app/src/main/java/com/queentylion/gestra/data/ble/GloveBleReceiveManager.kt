@@ -8,6 +8,10 @@ import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewModelScope
 import com.queentylion.gestra.util.ConnectionState
 import com.queentylion.gestra.domain.ble.GloveReceiveManager
 import com.queentylion.gestra.domain.ble.GloveResult
@@ -38,6 +42,12 @@ class GloveBleReceiveManager @Inject constructor(
 
     override val data: MutableSharedFlow<Resource<GloveResult>> = MutableSharedFlow()
 
+    override var connectionState by mutableStateOf<ConnectionState>(ConnectionState.Uninitialized)
+
+    override val flexResistenceArray: ArrayDeque<IntArray> = ArrayDeque(100)
+
+    override var initializingMessage by mutableStateOf<String?>(null)
+
     private val bleScanner by lazy {
         bluetoothAdapter.bluetoothLeScanner
     }
@@ -52,15 +62,15 @@ class GloveBleReceiveManager @Inject constructor(
 
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
-    private val scanCallback = object : ScanCallback(){
+    private val scanCallback = object : ScanCallback() {
 
         override fun onScanResult(callbackType: Int, result: ScanResult) {
-            if(result.device.name == DEVICE_NAME){
+            if (result.device.name == DEVICE_NAME) {
                 coroutineScope.launch {
                     data.emit(Resource.Loading(message = "Connecting to device..."))
                 }
-                if(isScanning){
-                    result.device.connectGatt(context,false, gattCallback)
+                if (isScanning) {
+                    result.device.connectGatt(context, false, gattCallback)
                     isScanning = false
                     bleScanner.stopScan(this)
                 }
@@ -71,24 +81,31 @@ class GloveBleReceiveManager @Inject constructor(
     private var currentConnectionAttempt = 1
     private var MAXIMUM_CONNECTION_ATTEMPTS = 5
 
-    private val gattCallback = object : BluetoothGattCallback(){
+    private val gattCallback = object : BluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
-            if(status == BluetoothGatt.GATT_SUCCESS){
-                if(newState == BluetoothProfile.STATE_CONNECTED){
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                if (newState == BluetoothProfile.STATE_CONNECTED) {
                     coroutineScope.launch {
                         data.emit(Resource.Loading(message = "Discovering Services..."))
                     }
                     gatt.discoverServices()
                     this@GloveBleReceiveManager.gatt = gatt
-                } else if(newState == BluetoothProfile.STATE_DISCONNECTED){
+                } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                     coroutineScope.launch {
-                        data.emit(Resource.Success(data = GloveResult(IntArray(11), ConnectionState.Disconnected)))
+                        data.emit(
+                            Resource.Success(
+                                data = GloveResult(
+                                    IntArray(11),
+                                    ConnectionState.Disconnected
+                                )
+                            )
+                        )
                     }
                     gatt.close()
                 }
-            }else{
+            } else {
                 gatt.close()
-                currentConnectionAttempt+=1
+                currentConnectionAttempt += 1
                 coroutineScope.launch {
                     data.emit(
                         Resource.Loading(
@@ -96,9 +113,9 @@ class GloveBleReceiveManager @Inject constructor(
                         )
                     )
                 }
-                if(currentConnectionAttempt<=MAXIMUM_CONNECTION_ATTEMPTS){
+                if (currentConnectionAttempt <= MAXIMUM_CONNECTION_ATTEMPTS) {
                     startReceiving()
-                }else{
+                } else {
                     coroutineScope.launch {
                         data.emit(Resource.Error(errorMessage = "Could not connect to ble device"))
                     }
@@ -107,7 +124,7 @@ class GloveBleReceiveManager @Inject constructor(
         }
 
         override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
-            with(gatt){
+            with(gatt) {
                 printGattTable()
                 coroutineScope.launch {
                     data.emit(Resource.Loading(message = "Adjusting MTU space..."))
@@ -131,7 +148,7 @@ class GloveBleReceiveManager @Inject constructor(
 
             val index = characteristicUuids.indexOf(characteristic.uuid)
             if (index != -1) {
-                val arrayLen = value.size/4;
+                val arrayLen = value.size / 4;
 
                 val resultArray = IntArray(arrayLen)
 
@@ -162,7 +179,11 @@ class GloveBleReceiveManager @Inject constructor(
             }
         }
 
-        override fun onDescriptorWrite(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
+        override fun onDescriptorWrite(
+            gatt: BluetoothGatt?,
+            descriptor: BluetoothGattDescriptor?,
+            status: Int
+        ) {
             super.onDescriptorWrite(gatt, descriptor, status)
             characteristicsUuidArray.removeAt(0)
             if (gatt != null) {
@@ -174,12 +195,11 @@ class GloveBleReceiveManager @Inject constructor(
     }
 
 
-
-    private fun enableNotification(gatt: BluetoothGatt){
+    private fun enableNotification(gatt: BluetoothGatt) {
         val cccdUuid = UUID.fromString(CCCD_DESCRIPTOR_UUID)
         val payload = BluetoothGattDescriptor.ENABLE_INDICATION_VALUE
 
-        if(characteristicsUuidArray.size == 0) {
+        if (characteristicsUuidArray.size == 0) {
             characteristicsUuidArray = arrayListOf(
                 P0_CHARACTERISTICS_UUID,
             )
@@ -187,7 +207,8 @@ class GloveBleReceiveManager @Inject constructor(
             return
         };
 
-        val characteristic = findCharacteristics(GLOVE_FLEX_SERVICE_UUID,
+        val characteristic = findCharacteristics(
+            GLOVE_FLEX_SERVICE_UUID,
             characteristicsUuidArray[0]
         )
 
@@ -196,22 +217,25 @@ class GloveBleReceiveManager @Inject constructor(
         };
 
         characteristic?.getDescriptor(cccdUuid)?.let { cccdDescriptor ->
-            if(!gatt.setCharacteristicNotification(characteristic, true)){
-                Log.d("BLEReceiveManager","set characteristics notification failed")
+            if (!gatt.setCharacteristicNotification(characteristic, true)) {
+                Log.d("BLEReceiveManager", "set characteristics notification failed")
                 return
             }
             writeDescription(cccdDescriptor, payload)
         }
     }
 
-    private fun writeDescription(descriptor: BluetoothGattDescriptor, payload: ByteArray){
+    private fun writeDescription(descriptor: BluetoothGattDescriptor, payload: ByteArray) {
         gatt?.let { gatt ->
             descriptor.value = payload
             gatt.writeDescriptor(descriptor)
         } ?: error("Not connected to a BLE device!")
     }
 
-    private fun findCharacteristics(serviceUUID: String, characteristicsUUID:String):BluetoothGattCharacteristic?{
+    private fun findCharacteristics(
+        serviceUUID: String,
+        characteristicsUUID: String
+    ): BluetoothGattCharacteristic? {
         return gatt?.services?.find { service ->
             service.uuid.toString() == serviceUUID
         }?.characteristics?.find { characteristics ->
@@ -224,7 +248,8 @@ class GloveBleReceiveManager @Inject constructor(
             data.emit(Resource.Loading(message = "Scanning Ble devices..."))
         }
         isScanning = true
-        bleScanner.startScan(null,scanSettings,scanCallback)
+//        startCollectGloveData()
+        bleScanner.startScan(null, scanSettings, scanCallback)
     }
 
     override fun reconnect() {
@@ -261,14 +286,45 @@ class GloveBleReceiveManager @Inject constructor(
         gatt?.close()
     }
 
-    private fun disconnectCharacteristic(characteristic: BluetoothGattCharacteristic){
+    private fun disconnectCharacteristic(characteristic: BluetoothGattCharacteristic) {
         val cccdUuid = UUID.fromString(CCCD_DESCRIPTOR_UUID)
         characteristic.getDescriptor(cccdUuid)?.let { cccdDescriptor ->
-            if(gatt?.setCharacteristicNotification(characteristic,false) == false){
-                Log.d("GloveReceiveManager","set characteristics notification failed")
+            if (gatt?.setCharacteristicNotification(characteristic, false) == false) {
+                Log.d("GloveReceiveManager", "set characteristics notification failed")
                 return
             }
             writeDescription(cccdDescriptor, BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE)
+        }
+    }
+
+    private fun startCollectGloveData() {
+        coroutineScope.launch {
+            data.collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        connectionState = result.data.connectionState
+                        if (flexResistenceArray.size >= 100) {
+                            flexResistenceArray.removeLast()
+                        }
+                        flexResistenceArray.addFirst(result.data.flexDegree)
+                    }
+
+                    is Resource.Loading -> {
+                        initializingMessage = result.message
+                        connectionState =
+                            result.data?.connectionState ?: ConnectionState.CurrentlyInitializing
+                    }
+
+                    is Resource.Error -> {
+                        connectionState = ConnectionState.Uninitialized
+                    }
+                }
+                if (connectionState === ConnectionState.Uninitialized) {
+                    startReceiving()
+                } else if (connectionState === ConnectionState.Disconnected) {
+                    reconnect()
+                }
+            }
         }
     }
 

@@ -36,7 +36,9 @@ import com.queentylion.gestra.ui.screens.main.Main
 import com.queentylion.gestra.ui.screens.navscaffold.NavScaffold
 import com.queentylion.gestra.ui.screens.translate.Translate
 import com.queentylion.gestra.ui.theme.AppTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 

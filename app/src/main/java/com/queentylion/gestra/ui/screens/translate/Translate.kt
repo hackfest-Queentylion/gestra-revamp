@@ -1,11 +1,7 @@
 package com.queentylion.gestra.ui.screens.translate
 
-import android.content.Context
-import android.content.Intent
-import android.speech.RecognizerIntent
-import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
-import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,31 +21,43 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.queentylion.gestra.R
 import com.queentylion.gestra.ui.composables.BottomControls
 import com.queentylion.gestra.ui.composables.ClickablePanel
 import com.queentylion.gestra.ui.composables.ResultBox
 import com.queentylion.gestra.ui.screens.main.Routes
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.queentylion.gestra.util.ConnectionState
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Translate(
-    mainNavController: NavController
+    mainNavController: NavController,
+    viewModel: TranslateViewModel = hiltViewModel(LocalContext.current as ComponentActivity)
 ) {
     var isGeminiChecked by remember { mutableStateOf(false) }
     var activeButtonIndex by remember { mutableStateOf(1) }
+    var resultText by remember {
+        mutableStateOf(if (activeButtonIndex == 1) "Start sign language" else "Start speaking")
+    }
+    var textColor by remember { mutableStateOf(Color(0xFFD3D3D3)) }
+
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -107,7 +115,14 @@ fun Translate(
             )
             ResultBox(
                 modifier = Modifier
-                    .weight(1f)
+                    .weight(1f),
+                resultText = resultText,
+                textColor = textColor,
+                onSpeakerClick = {
+                    viewModel.textToSpeech(context, resultText)
+                },
+                test = viewModel.gloveReceiveManager.initializingMessage.toString()
+
             )
             Divider(
                 thickness = (0.5).dp,
@@ -120,6 +135,12 @@ fun Translate(
                 activeButtonIndex = activeButtonIndex,
                 onRadioClicked = {
                     activeButtonIndex = it
+                },
+                changeText = {
+                    resultText = it
+                },
+                changeTextColor = {
+                    textColor = it
                 }
             )
         }
