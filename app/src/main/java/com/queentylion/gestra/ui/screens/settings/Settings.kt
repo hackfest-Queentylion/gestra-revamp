@@ -47,18 +47,34 @@ fun Settings(
 
     viewModel.initializeBluetooth(context)
 
-    LaunchedEffect(permissionsState.allPermissionsGranted) {
-        if (permissionsState.allPermissionsGranted) {
+//    LaunchedEffect(permissionsState.allPermissionsGranted) {
+//        if (permissionsState.allPermissionsGranted) {
+//            viewModel.enableBluetooth(activity!!)
+//        } else {
+//            permissionsState.launchMultiplePermissionRequest()
+//        }
+//    }
+//
+//    LaunchedEffect(viewModel.isBluetoothEnabled()) {
+//        if (viewModel.isBluetoothEnabled()) {
+//            viewModel.initializeGloveConnection()
+//        } else {
+//            viewModel.enableBluetooth(activity!!)
+//        }
+//    }
+
+    LaunchedEffect(
+        key1 = permissionsState.allPermissionsGranted,
+        key2 = viewModel.isBluetoothEnabled()
+    ) {
+        if (permissionsState.allPermissionsGranted && viewModel.isBluetoothEnabled()) {
             viewModel.initializeGloveConnection()
+        } else if (!permissionsState.allPermissionsGranted) {
+            permissionsState.launchMultiplePermissionRequest()
+        } else if (!viewModel.isBluetoothEnabled()) {
+            viewModel.enableBluetooth(activity!!)
         } else {
             permissionsState.launchMultiplePermissionRequest()
-        }
-    }
-
-    LaunchedEffect(viewModel.isBluetoothEnabled()) {
-        if (viewModel.isBluetoothEnabled()) {
-            viewModel.initializeGloveConnection()
-        } else {
             viewModel.enableBluetooth(activity!!)
         }
     }
