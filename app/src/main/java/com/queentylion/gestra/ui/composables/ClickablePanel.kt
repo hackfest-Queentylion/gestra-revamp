@@ -49,7 +49,7 @@ fun ClickablePanel(
         ),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 25.dp, end = 30.dp, top = 20.dp, bottom = 24.dp),
+            .padding(start = 25.dp, end = 30.dp, top = 20.dp, bottom = 10.dp),
         contentPadding = PaddingValues(vertical = 10.dp, horizontal = 20.dp)
     ) {
         Row(
