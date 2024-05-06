@@ -315,7 +315,7 @@ class GloveBleReceiveManager @Inject constructor(
                         flexResistance = updatedFlexResistance
                         try {
                             if (flexResistenceArray.size >= 1000) {
-                                flexResistenceArray = ArrayDeque(flexResistenceArray.take(500))
+                                flexResistenceArray.removeLast()
                                 flexResistenceArray.addFirst(flexResistance)
                             } else {
                                 flexResistenceArray.addFirst(flexResistance)
