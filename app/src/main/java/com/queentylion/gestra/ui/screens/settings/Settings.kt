@@ -26,6 +26,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.queentylion.gestra.ui.composables.AnimatedGlove
+import dagger.Component
 
 @OptIn(ExperimentalPermissionsApi::class)
 @SuppressLint("RestrictedApi")
@@ -36,6 +37,7 @@ fun Settings(
 ) {
 
     val context = LocalContext.current
+    val activity = LocalContext.current as? ComponentActivity
     val requiredPermissions = listOf(
         android.Manifest.permission.BLUETOOTH_SCAN,
         android.Manifest.permission.BLUETOOTH_CONNECT,
@@ -50,6 +52,14 @@ fun Settings(
             viewModel.initializeGloveConnection()
         } else {
             permissionsState.launchMultiplePermissionRequest()
+        }
+    }
+
+    LaunchedEffect(viewModel.isBluetoothEnabled()) {
+        if (viewModel.isBluetoothEnabled()) {
+            viewModel.initializeGloveConnection()
+        } else {
+            viewModel.enableBluetooth(activity!!)
         }
     }
 

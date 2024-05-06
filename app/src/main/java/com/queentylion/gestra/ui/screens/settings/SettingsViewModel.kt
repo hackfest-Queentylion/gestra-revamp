@@ -45,7 +45,7 @@ class SettingsViewModel @Inject constructor(
         bluetoothAdapter = bluetoothManager?.adapter
     }
 
-    private fun isBluetoothEnabled(): Boolean {
+    fun isBluetoothEnabled(): Boolean {
         return bluetoothAdapter?.isEnabled == true
     }
 
