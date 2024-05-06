@@ -39,6 +39,7 @@ import com.queentylion.gestra.ui.composables.FullPanel
 import com.queentylion.gestra.ui.composables.Screen
 import com.queentylion.gestra.ui.composables.SmallPanel
 import com.queentylion.gestra.ui.screens.home.Home
+import com.queentylion.gestra.ui.screens.settings.Settings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -152,7 +153,9 @@ fun NavScaffold(
                         else -> null
                     }
                 },
-            ) { Greeting(name = "Setting") }
+            ) {
+                Settings()
+            }
         }
     }
 }
