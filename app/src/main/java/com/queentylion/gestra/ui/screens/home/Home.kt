@@ -90,7 +90,9 @@ fun Home(
             item(span = {
                 GridItemSpan(maxLineSpan)
             }) {
-                FullPanel()
+                FullPanel(onPanelClick = {
+                    mainNavController.navigate(Routes.Conversation)
+                })
             }
             items(panelItems) { panelData ->
                 SmallPanel(data = panelData)

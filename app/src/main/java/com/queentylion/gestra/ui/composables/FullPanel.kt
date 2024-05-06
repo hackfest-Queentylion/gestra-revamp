@@ -1,6 +1,7 @@
 package com.queentylion.gestra.ui.composables
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,14 +34,19 @@ import androidx.compose.ui.unit.sp
 import com.queentylion.gestra.R
 
 @Composable
-fun FullPanel() {
+fun FullPanel(
+    onPanelClick: () -> Unit
+) {
     val backgroundPainter: Painter = painterResource(id = R.drawable.img_fullpanel_background)
 
     Box(
         modifier = Modifier
+            .clip(RoundedCornerShape(25.dp))
+            .clickable {
+                onPanelClick()
+            }
             .fillMaxWidth()
             .height(200.dp)
-            .clip(RoundedCornerShape(25.dp))
             .background(MaterialTheme.colorScheme.primary)
             .paint(painter = backgroundPainter, contentScale = ContentScale.Fit)
     ) {
@@ -58,7 +64,7 @@ fun FullPanel() {
                 color = MaterialTheme.colorScheme.onPrimary
             )
             Button(
-                onClick = { /*TODO*/ },
+                onClick = { onPanelClick() },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
                     contentColor = MaterialTheme.colorScheme.primaryContainer

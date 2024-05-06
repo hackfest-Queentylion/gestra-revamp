@@ -8,12 +8,14 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.queentylion.gestra.ui.screens.conversation.Conversation
 import com.queentylion.gestra.ui.screens.navscaffold.NavScaffold
 import com.queentylion.gestra.ui.screens.translate.Translate
 
 object Routes {
     const val NavScaffold = "nav_scaffold"
     const val Translate = "translate"
+    const val Conversation = "conversation"
 }
 
 @Composable
@@ -37,6 +39,12 @@ fun Main() {
                             animationSpec = tween(300)
                         )
 
+                    Routes.Conversation ->
+                        slideIntoContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Up,
+                            animationSpec = tween(300)
+                        )
+
                     else -> null
                 }
             },
@@ -45,6 +53,12 @@ fun Main() {
                     Routes.Translate ->
                         slideOutOfContainer(
                             AnimatedContentTransitionScope.SlideDirection.Up,
+                            animationSpec = tween(300)
+                        )
+
+                    Routes.Conversation ->
+                        slideOutOfContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Down,
                             animationSpec = tween(300)
                         )
 
@@ -81,6 +95,34 @@ fun Main() {
             },
         ) {
             Translate(mainNavController = navController)
+        }
+
+        composable(
+            Routes.Conversation,
+            enterTransition = {
+                when (initialState.destination.route) {
+                    Routes.NavScaffold ->
+                        slideIntoContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Down,
+                            animationSpec = tween(300)
+                        )
+
+                    else -> null
+                }
+            },
+            exitTransition = {
+                when (targetState.destination.route) {
+                    Routes.NavScaffold ->
+                        slideOutOfContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Up,
+                            animationSpec = tween(300)
+                        )
+
+                    else -> null
+                }
+            },
+        ) {
+            Conversation(mainNavController = navController)
         }
     }
 }
