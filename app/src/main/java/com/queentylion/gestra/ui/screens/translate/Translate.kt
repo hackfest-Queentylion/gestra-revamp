@@ -67,7 +67,7 @@ fun Translate(
                 CenterAlignedTopAppBar(
                     title = {
                         Text(
-                            text = "Glove",
+                            text = "Translate",
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             fontWeight = FontWeight.ExtraBold,

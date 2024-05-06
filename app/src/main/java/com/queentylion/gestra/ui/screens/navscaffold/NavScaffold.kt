@@ -60,6 +60,7 @@ import com.queentylion.gestra.ui.composables.SmallPanel
 import com.queentylion.gestra.ui.screens.home.Home
 import com.queentylion.gestra.util.ConnectionState
 import javax.inject.Inject
+import com.queentylion.gestra.ui.screens.settings.Settings
 
 @RequiresApi(Build.VERSION_CODES.S)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
