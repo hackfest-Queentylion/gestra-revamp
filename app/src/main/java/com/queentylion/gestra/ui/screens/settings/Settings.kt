@@ -11,15 +11,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import androidx.lifecycle.LifecycleOwner
 import com.queentylion.gestra.ui.composables.AnimatedGlove
 
 @SuppressLint("RestrictedApi")
@@ -31,9 +33,26 @@ fun Settings(
 
     val context = LocalContext.current
     val activity = LocalContext.current as? ComponentActivity
+    val lifecycleOwner = LocalLifecycleOwner.current
 
+    DisposableEffect(lifecycleOwner) {
+        viewModel.initializeBluetooth(context)
+        viewModel.requestBluetoothPermissionsAndEnable(activity!!) { permissionGranted ->
+            if (permissionsGranted) {
+                viewModel.initializeGloveConnection()
+            } else {
+                // Handle permissions not granted
+            }
+        }
+
+        onDispose {
+
+        }
+    }
+    
     viewModel.initializeBluetooth(context)
     viewModel.requestBluetoothPermissionsAndEnable(activity!!)
+    viewModel.initializeGloveConnection()
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -50,6 +69,9 @@ fun Settings(
             modifier = Modifier
                 .fillMaxWidth(0.7f)
                 .padding(bottom = 20.dp)
+        )
+        Text(
+            text = viewModel.gloveReceiveManager.initializingMessage.toString()
         )
         AnimatedGlove(
             modifier = Modifier.fillMaxHeight(0.5f)

@@ -11,13 +11,13 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.viewModelScope
-import com.queentylion.gestra.util.ConnectionState
 import com.queentylion.gestra.domain.ble.GloveReceiveManager
 import com.queentylion.gestra.domain.ble.GloveResult
+import com.queentylion.gestra.util.ConnectionState
 import com.queentylion.gestra.util.Resource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import java.util.*
@@ -44,7 +44,9 @@ class GloveBleReceiveManager @Inject constructor(
 
     override var connectionState by mutableStateOf<ConnectionState>(ConnectionState.Uninitialized)
 
-    override val flexResistenceArray: ArrayDeque<IntArray> = ArrayDeque(100)
+    override var flexResistenceArray: ArrayDeque<IntArray> = ArrayDeque(200)
+
+    override var flexResistance by mutableStateOf(IntArray(11))
 
     override var initializingMessage by mutableStateOf<String?>(null)
 
@@ -73,6 +75,7 @@ class GloveBleReceiveManager @Inject constructor(
                     result.device.connectGatt(context, false, gattCallback)
                     isScanning = false
                     bleScanner.stopScan(this)
+                    startCollectGloveData()
                 }
             }
         }
@@ -248,7 +251,6 @@ class GloveBleReceiveManager @Inject constructor(
             data.emit(Resource.Loading(message = "Scanning Ble devices..."))
         }
         isScanning = true
-//        startCollectGloveData()
         bleScanner.startScan(null, scanSettings, scanCallback)
     }
 
@@ -300,30 +302,47 @@ class GloveBleReceiveManager @Inject constructor(
     private fun startCollectGloveData() {
         coroutineScope.launch {
             data.collect { result ->
+                delay(30)
                 when (result) {
                     is Resource.Success -> {
                         connectionState = result.data.connectionState
-                        if (flexResistenceArray.size >= 100) {
-                            flexResistenceArray.removeLast()
+                        val updatedFlexResistance = flexResistance.copyOf()
+                        for ((index, value) in result.data.flexDegree.withIndex()) {
+                            if (value != 0) {
+                                updatedFlexResistance[index] = value
+                            }
                         }
-                        flexResistenceArray.addFirst(result.data.flexDegree)
+                        flexResistance = updatedFlexResistance
+                        try {
+                            if (flexResistenceArray.size >= 1000) {
+                                flexResistenceArray = ArrayDeque(flexResistenceArray.take(500))
+                                flexResistenceArray.addFirst(flexResistance)
+                            } else {
+                                flexResistenceArray.addFirst(flexResistance)
+                            }
+                        } catch (error: Throwable) {
+                            // Handle error
+                            error.printStackTrace()
+                        }
                     }
 
                     is Resource.Loading -> {
+                        Log.d("MEMEKBESAR", "LOADING")
                         initializingMessage = result.message
                         connectionState =
                             result.data?.connectionState ?: ConnectionState.CurrentlyInitializing
                     }
 
                     is Resource.Error -> {
+                        Log.d("MEMEKBESAR", "ERROR")
                         connectionState = ConnectionState.Uninitialized
                     }
                 }
-                if (connectionState === ConnectionState.Uninitialized) {
-                    startReceiving()
-                } else if (connectionState === ConnectionState.Disconnected) {
-                    reconnect()
-                }
+//                if (connectionState === ConnectionState.Uninitialized) {
+//                    startReceiving()
+//                } else if (connectionState === ConnectionState.Disconnected) {
+//                    reconnect()
+//                }
             }
         }
     }

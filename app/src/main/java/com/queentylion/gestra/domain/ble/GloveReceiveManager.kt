@@ -15,6 +15,8 @@ interface GloveReceiveManager {
 
     var initializingMessage: String?
 
+    var flexResistance: IntArray
+
     fun reconnect()
 
     fun disconnect()
