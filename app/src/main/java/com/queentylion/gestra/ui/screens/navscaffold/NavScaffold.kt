@@ -68,46 +68,45 @@ import com.queentylion.gestra.ui.screens.settings.Settings
 fun NavScaffold(
     navViewModel: NavScaffoldViewModel = hiltViewModel(),
     mainNavController: NavController,
-    activity: Activity = LocalContext.current as Activity
+//    activity: Activity = LocalContext.current as Activity
 ) {
     val navController = rememberNavController()
     val navUiState = navViewModel.uiState.collectAsState()
 
-    val bluetoothEnabledState by navViewModel.bluetoothEnabledState.observeAsState()
-    val bluetoothPermissionState by navViewModel.bluetoothPermissionState.observeAsState()
+//    val bluetoothEnabledState by navViewModel.bluetoothEnabledState.observeAsState()
+//    val bluetoothPermissionState by navViewModel.bluetoothPermissionState.observeAsState()
+//
+//    val permissionState = rememberMultiplePermissionsState(
+//        permissions = listOf(
+//            Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT,
+//            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION
+//        )
+//    )
+//    val lifecycleOwner = LocalLifecycleOwner.current
 
-    @OptIn(ExperimentalPermissionsApi::class)
-    val permissionState = rememberMultiplePermissionsState(
-        permissions = listOf(
-            Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT,
-            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION
-        )
-    )
-    val lifecycleOwner = LocalLifecycleOwner.current
-
-    DisposableEffect(
-        key1 = lifecycleOwner,
-        effect = {
-            val observer = LifecycleEventObserver { _, event ->
-                if (event == Lifecycle.Event.ON_START) {
-                    permissionState.launchMultiplePermissionRequest()
-                    if (permissionState.allPermissionsGranted && navViewModel.gloveReceiveManager.connectionState == ConnectionState.Disconnected) {
-                        navViewModel.gloveReceiveManager.reconnect()
-                    }
-                }
-                if (event == Lifecycle.Event.ON_STOP) {
-                    if (navViewModel.gloveReceiveManager.connectionState == ConnectionState.Connected) {
-                        navViewModel.gloveReceiveManager.disconnect()
-                    }
-                }
-            }
-            lifecycleOwner.lifecycle.addObserver(observer)
-
-            onDispose {
-                lifecycleOwner.lifecycle.removeObserver(observer)
-            }
-        }
-    )
+//    DisposableEffect(
+//        key1 = lifecycleOwner,
+//        effect = {
+//            val observer = LifecycleEventObserver { _, event ->
+//                if (event == Lifecycle.Event.ON_START) {
+//                    permissionState.launchMultiplePermissionRequest()
+//                    if (permissionState.allPermissionsGranted && navViewModel.gloveReceiveManager.connectionState == ConnectionState.Disconnected) {
+//                        navViewModel.gloveReceiveManager.reconnect()
+//                    }
+//                }
+//                if (event == Lifecycle.Event.ON_STOP) {
+//                    if (navViewModel.gloveReceiveManager.connectionState == ConnectionState.Connected) {
+//                        navViewModel.gloveReceiveManager.disconnect()
+//                    }
+//                }
+//            }
+//            lifecycleOwner.lifecycle.addObserver(observer)
+//
+//            onDispose {
+//                lifecycleOwner.lifecycle.removeObserver(observer)
+//            }
+//        }
+//    )
 
 //    LaunchedEffect(Unit) {
 ////        permissionState.launchMultiplePermissionRequest()
@@ -117,20 +116,20 @@ fun NavScaffold(
 //        Log.d("MMEK2", bluetoothPermissionState.toString())
 //    }
 
-    when {
-        bluetoothPermissionState == false -> {
-            Log.d("MMEK2", "ememek")
-            navViewModel.requestBluetoothPermission(activity)
-            if (bluetoothEnabledState == false) {
-                navViewModel.requestBluetoothEnable(activity)
-            }
-        }
-
-        bluetoothEnabledState == false -> {
-            Log.d("MMEK1", "maks")
-            navViewModel.requestBluetoothEnable(activity)
-        }
-    }
+//    when {
+//        bluetoothPermissionState == false -> {
+//            Log.d("MMEK2", "ememek")
+//            navViewModel.requestBluetoothPermission(activity)
+//            if (bluetoothEnabledState == false) {
+//                navViewModel.requestBluetoothEnable(activity)
+//            }
+//        }
+//
+//        bluetoothEnabledState == false -> {
+//            Log.d("MMEK1", "maks")
+//            navViewModel.requestBluetoothEnable(activity)
+//        }
+//    }
 
     Scaffold(
         topBar = {
@@ -235,7 +234,9 @@ fun NavScaffold(
                         else -> null
                     }
                 },
-            ) { Greeting(name = "Setting") }
+            ) {
+                Settings()
+            }
         }
     }
 }

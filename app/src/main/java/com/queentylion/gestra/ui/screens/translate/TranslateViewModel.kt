@@ -2,9 +2,6 @@ package com.queentylion.gestra.ui.screens.translate
 
 import android.content.Context
 import android.speech.tts.TextToSpeech
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.queentylion.gestra.domain.ble.GloveReceiveManager
@@ -19,8 +16,6 @@ class TranslateViewModel @Inject constructor(
 ) : ViewModel() {
 //    var textFromSpeech: String? by mutableStateOf(null)
     private var tts: TextToSpeech? = null
-
-
 
     fun textToSpeech(context: Context, text: String) {
         tts = TextToSpeech(context) {
