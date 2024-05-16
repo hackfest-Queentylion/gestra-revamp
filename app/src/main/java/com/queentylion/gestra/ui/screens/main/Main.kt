@@ -1,5 +1,7 @@
 package com.queentylion.gestra.ui.screens.main
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.queentylion.gestra.ui.screens.calibration.Calibration
 import com.queentylion.gestra.ui.screens.conversation.Conversation
 import com.queentylion.gestra.ui.screens.navscaffold.NavScaffold
 import com.queentylion.gestra.ui.screens.translate.Translate
@@ -15,9 +18,12 @@ import com.queentylion.gestra.ui.screens.translate.Translate
 object Routes {
     const val NavScaffold = "nav_scaffold"
     const val Translate = "translate"
-    const val Conversation = "conversation"
+    const val Calibration = "calibration"
+    const val Conversation = "" +
+            ""
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun Main() {
     val navController = rememberNavController()
@@ -123,6 +129,34 @@ fun Main() {
             },
         ) {
             Conversation(mainNavController = navController)
+        }
+
+        composable(
+            Routes.Calibration,
+            enterTransition = {
+                when (initialState.destination.route) {
+                    Routes.NavScaffold ->
+                        slideIntoContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Down,
+                            animationSpec = tween(300)
+                        )
+
+                    else -> null
+                }
+            },
+            exitTransition = {
+                when (targetState.destination.route) {
+                    Routes.NavScaffold ->
+                        slideOutOfContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Up,
+                            animationSpec = tween(300)
+                        )
+
+                    else -> null
+                }
+            },
+        ){
+            Calibration(mainNavController = navController)
         }
     }
 }

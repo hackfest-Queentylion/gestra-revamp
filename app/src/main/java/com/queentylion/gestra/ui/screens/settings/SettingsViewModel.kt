@@ -31,7 +31,6 @@ class SettingsViewModel @Inject constructor(
     companion object {
         const val REQUEST_ENABLE_BLUETOOTH = 1
         const val REQUEST_BLUETOOTH_PERMISSION = 2
-        const val REQUEST_BLUETOOTH_SCAN = 3
     }
 
     private val _uiState = MutableStateFlow(SettingsState())

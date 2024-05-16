@@ -320,6 +320,7 @@ class GloveBleReceiveManager @Inject constructor(
                             } else {
                                 flexResistenceArray.addFirst(flexResistance)
                             }
+                            Log.d("BABI", flexResistenceArray.first[0].toString())
                         } catch (error: Throwable) {
                             // Handle error
                             error.printStackTrace()

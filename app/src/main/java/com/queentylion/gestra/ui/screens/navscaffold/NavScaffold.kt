@@ -235,7 +235,7 @@ fun NavScaffold(
                     }
                 },
             ) {
-                Settings()
+                Settings(mainNavController = mainNavController)
             }
         }
     }
